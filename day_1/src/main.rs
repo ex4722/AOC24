@@ -56,15 +56,19 @@ struct List{
     left: i64,
     right: i64
 }
+//struct List(i64,i64);
 
 fn main() {
-    let mut list: Vec<Vec<&str>> = Vec::new();
-    let mut entires: Vec<List> = Vec::new();
-    list = fs::read_to_string("./input.txt")
+    let mut entries : Vec<List> = Vec::new();
+    entries = fs::read_to_string("./input.txt")
         .expect("File open error")
-        .split("\n")
-        .collect::<Vec<&str>>()
-        .iter()
-        .map(|x| x.split("   ").collect::<Vec<&str>>())
+        .lines()
+        .map(|x| {
+            let mut z =  x.split("   ");
+            List{
+                left: z.next().unwrap().parse::<i64>().unwrap(),
+                right: z.next().unwrap().parse::<i64>().unwrap(),
+            }
+            })
         .collect();
 }
