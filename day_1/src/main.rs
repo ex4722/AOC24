@@ -52,7 +52,19 @@ fn part2(){
     println!("Sim Score: {}", sim_score);
 }
 
+struct List{
+    left: i64,
+    right: i64
+}
+
 fn main() {
-    part1();
-    part2();
+    let mut list: Vec<Vec<&str>> = Vec::new();
+    let mut entires: Vec<List> = Vec::new();
+    list = fs::read_to_string("./input.txt")
+        .expect("File open error")
+        .split("\n")
+        .collect::<Vec<&str>>()
+        .iter()
+        .map(|x| x.split("   ").collect::<Vec<&str>>())
+        .collect();
 }
