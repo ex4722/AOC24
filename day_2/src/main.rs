@@ -4,9 +4,6 @@ fn process_line(level: &Vec<i64>) -> (bool, usize){
     let increasing: bool = level[0] < level[1];
 
     for idx in 0..(level.len() - 1){
-        if level[idx] == level[idx+1]{
-            return (false,idx);
-        }
         if level[idx] > level[idx+1] && increasing{
             return (false, idx);
         }
@@ -14,7 +11,7 @@ fn process_line(level: &Vec<i64>) -> (bool, usize){
             return (false, idx);
         }
 
-        let difference: i64 = (level[idx + 1] - level[idx]).abs();
+        let difference: u64 = level[idx + 1].abs_diff(level[idx]) ;
         if !(difference >= 1 && difference <= 3){
             return (false, idx);
         }
@@ -31,7 +28,8 @@ fn main() {
     let game: Vec<Vec<i64>> = contents.lines()
         .map(|line| {
             line.split_whitespace()
-                .map(|x| {x.parse::<i64>().unwrap()})
+                .map(str::parse::<i64>)
+                .map(Result::unwrap)
                 .collect::<Vec<i64>>()
         })
         .collect();
