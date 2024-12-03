@@ -1,12 +1,7 @@
 use std::fs;
 use regex::Regex;
 
-fn main() {
-    let re = Regex::new(r"mul\((\d+),(\d+)\)|do\(\)|don't\(\)").unwrap();
-    let contents = fs::read_to_string("./input.txt")
-        .expect("File not found");
-
-
+fn do_capture(re: Regex, contents: &String) -> i64{
     let mut multiplexer: i64 = 0;
     let mut do_multi: bool = true;
     for caps in re.captures_iter(&contents){
@@ -27,6 +22,14 @@ fn main() {
         }
         multiplexer += caps.get(1).unwrap().as_str().parse::<i64>().unwrap() * caps.get(2).unwrap().as_str().parse::<i64>().unwrap();
     }
+    multiplexer
+}
+fn main() {
+    let re1 = Regex::new(r"mul\((\d+),(\d+)\)").unwrap();
+    let re2 = Regex::new(r"mul\((\d+),(\d+)\)|do\(\)|don't\(\)").unwrap();
+    let contents = fs::read_to_string("./input.txt")
+        .expect("File not found");
 
-    println!("{}", multiplexer);
+    println!("{}", do_capture(re1, &contents));
+    println!("{}", do_capture(re2, &contents));
 }
