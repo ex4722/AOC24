@@ -1,27 +1,26 @@
 use std::fs;
 
 
-const LEN:usize= 3;
+fn check_xmas_count(board: Vec<Vec<char>>, row: usize, col: usize, search: &str) -> usize{
+    let len:usize= search.len() - 1;
 
-fn check_xmas_count(board: Vec<Vec<char>>, row: usize, col: usize) -> usize{
-    let row_start = if row.saturating_sub(LEN) > 0 {row - LEN} else {0};
-    let row_end   = if row + LEN < board.len() {row + LEN } else {board.len() - 1 };
+    let row_start = if row.saturating_sub(len) > 0 {row - len} else {0};
+    let row_end   = if row + len < board.len() {row + len } else {board.len() - 1 };
 
-    let col_start = if col.saturating_sub(LEN) > 0 {col - LEN } else {0};
-    let col_end   = if col + LEN < board[0].len() {col + LEN } else {board[0].len() - 1};
+    let col_start = if col.saturating_sub(len) > 0 {col - len } else {0};
+    let col_end   = if col + len < board[0].len() {col + len } else {board[0].len() - 1};
 
 
-    println!("{} and {} and {}", row_start, row, row_end);
-    println!("{} and {} and {}", col_start, col, col_end);
-    //
-    println!("{} and {}", row, col);
+    //println!("{} and {} and {}", row_start, row, row_end);
+    //println!("{} and {} and {}", col_start, col, col_end);
+    //println!("{} and {}", row, col);
 
 
     let mut perms: Vec<String> = Vec::new();
     // check forwards and backwards row
     perms.push(board.get(row)
         .and_then(|r| r.get(col_start..=col)
-         .map(|slice| slice.iter().rev().collect::<String>()))
+        .map(|slice| slice.iter().rev().collect::<String>()))
         .unwrap_or("".to_string()));
 
     perms.push(board.get(row).and_then(|r| r.get(col..=col_end).map(|slice| slice.iter().collect::<String>())).unwrap_or("".to_string()));
@@ -76,9 +75,9 @@ fn check_xmas_count(board: Vec<Vec<char>>, row: usize, col: usize) -> usize{
         })
         .collect::<String>());
 
-    let count = perms.iter().filter(|x| x == &"XMAS").count();
-    print!("{:?}", perms);
-    print!("{}", count);
+    let count = perms.iter().filter(|x| *x == search).count();
+    //print!("{:?}", perms);
+    //print!("{}", count);
     count
 }
 
@@ -94,18 +93,27 @@ fn main() {
     //let total_count = (0..board.len()-1).
     //map(0..board[0].len()-1)
 
-    let mut total_count= 0;
+    let mut xmas_count= 0;
 
     for row_idx in 0..board.len() {
         for col_idx in 0..board[row_idx].len() {
-            total_count += check_xmas_count(board.clone(), row_idx, col_idx);
+            xmas_count += check_xmas_count(board.clone(), row_idx, col_idx, "XMAS");
         }
     }
+    println!("\n{}", xmas_count);
 
-
-
-    //println!("{}", check_xmas_count(board.clone(), 3, 4));
-    println!("\n{}", total_count);
-
-    // search for each X value and then get the count of XMAS
+    let mut mas_count = 0;
+    for row_idx in 1..(board.len()-1) {
+        for col_idx in 1..(board[row_idx].len()-1) {
+            if board[row_idx][col_idx] == 'A'{
+                if board[row_idx-1][col_idx-1] as u8 ^ board[row_idx+1][col_idx+1] as u8 == 0b00011110{
+                    if board[row_idx-1][col_idx+1] as u8 ^ board[row_idx+1][col_idx-1] as u8 == 0b00011110{
+                        mas_count += 1;
+                    }
+                }
+            }
+        }
+    }
+    // part 2
+    println!("{}", mas_count);
 }
