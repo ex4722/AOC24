@@ -11,7 +11,7 @@ fn check_entry_valid(page: &Vec<usize>, idx: usize, mut page_order_hashmap: Hash
     return true;
 }
 
-fn check_page_valid(page: Vec<usize>, mut page_order_hashmap: HashMap<usize, Vec<usize>>) -> bool{
+fn check_page_valid(page: &Vec<usize>, mut page_order_hashmap: HashMap<usize, Vec<usize>>) -> bool{
     for (idx, value) in page.iter().enumerate(){
         // check if any value that should be after shows up before
         for prev in &page[0..idx]{
@@ -43,7 +43,7 @@ fn _part_1(){
             update.split(",").map(|x| x.parse::<usize>().unwrap()).collect::<Vec<usize>>()
         })
         .filter(|processed_update| {
-           check_page_valid(processed_update.clone(), page_order_hashmap.clone())
+           check_page_valid(&processed_update, page_order_hashmap.clone())
         })
         .map(|valid_update| *valid_update.get(valid_update.len()/ 2).unwrap()).sum();
         // wtf is the difference?
@@ -73,11 +73,11 @@ fn main() {
             update.split(",").map(|x| x.parse::<usize>().unwrap()).collect::<Vec<usize>>()
         })
         .filter(|processed_update| {
-           !check_page_valid(processed_update.clone(), page_order_hashmap.clone())
+           !check_page_valid(&processed_update, page_order_hashmap.clone())
         })
         .for_each(|mut invalid_page|{
             // start backwards and look forward
-            while !check_page_valid(invalid_page.clone(), page_order_hashmap.clone()){
+            while !check_page_valid(&invalid_page, page_order_hashmap.clone()){
 
             (0..invalid_page.len()).rev().for_each(|idx| {
                 if !check_entry_valid(&invalid_page, idx, page_order_hashmap.clone()){
@@ -102,7 +102,7 @@ fn main() {
 
             println!("{:?}", invalid_page);
             invalid_middle_count += invalid_page.get(invalid_page.len()/ 2).unwrap();
-            if !check_page_valid(invalid_page, page_order_hashmap.clone()){
+            if !check_page_valid(&invalid_page, page_order_hashmap.clone()){
                 println!("WTF");
             };
 
